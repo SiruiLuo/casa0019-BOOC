@@ -16,6 +16,7 @@ The integrated app for this device also generates a 3D augmentation of the book.
 4. **Neopixel Strip Light**
 
 ## Design Features
+The enclosure of the device is designed to resemble a book complying with the overall subject of the project about libraries. The main box is made of 3mm laser-cut plywood and coloured to convey a majestic old look. The gauge, the E-ink screen and the buttons are embedded on a 3d printed plate and hand-painted to give a paper feeling. The use of the E-ink screen was also a decision towards maintaining the overall book feeling of the texts and images. 
 1. **Book Closure**
 2. **Magnetic Gauge**
 3. **Interactive Buttons**
