@@ -3,8 +3,10 @@ using UnityEngine;
 using UnityEngine.Networking;
 using TMPro; // Using TextMeshPro component
 using XCharts.Runtime; // Using XChart for chart operations
+using Newtonsoft.Json.Linq; // For JSON parsing
+using M2MqttUnity; // Using MQTT for Unity
+using uPLibrary.Networking.M2Mqtt.Messages; // MQTT message handling
 
-// Data structure definitions to match the JSON format returned by the API
 [System.Serializable]
 public class Map
 {
@@ -34,11 +36,9 @@ public class SurveyData
 
 public class Summarize : MonoBehaviour
 {
-    // API URL
     [SerializeField]
-    private string apiUrl = "https://uclapi.com/workspaces/sensors/summary?survey_ids=119&survey_filter=student&token=uclapi-0ed0e9b489b2d31-bec048527c1a578-82b2ccf36ee20ca-2883c2e949f470e";
+    private string apiUrl; // API URL for data retrieval
 
-    // TextMeshPro UI elements
     [SerializeField]
     private TextMeshProUGUI surveyNameText;
     [SerializeField]
@@ -48,13 +48,23 @@ public class Summarize : MonoBehaviour
     [SerializeField]
     private TextMeshProUGUI sensorsOtherText;
 
-    // PieChart from XChart
     [SerializeField]
-    private PieChart pieChart;
+    private PieChart pieChart; // PieChart from XChart
+
+    [SerializeField]
+    private MqttManager mqttManager; // MQTT Manager reference
+
+    private readonly string[] apiUrls = {
+        "https://uclapi.com/workspaces/sensors/summary?survey_ids=119&survey_filter=student&token=uclapi-0ed0e9b489b2d31-bec048527c1a578-82b2ccf36ee20ca-2883c2e949f470e",
+        "https://uclapi.com/workspaces/sensors/summary?survey_ids=111&survey_filter=student&token=uclapi-0ed0e9b489b2d31-bec048527c1a578-82b2ccf36ee20ca-2883c2e949f470e",
+        "https://uclapi.com/workspaces/sensors/summary?survey_ids=116&survey_filter=student&token=uclapi-0ed0e9b489b2d31-bec048527c1a578-82b2ccf36ee20ca-2883c2e949f470e"
+    };
+
+    private Coroutine updateCoroutine;
 
     void Awake()
     {
-        // Ensure required components are assigned
+        // Ensure all UI components and PieChart are assigned
         if (surveyNameText == null || sensorsOccupiedText == null || sensorsAbsentText == null || sensorsOtherText == null)
         {
             Debug.LogError("TextMeshProUGUI components are not assigned in the Inspector.");
@@ -64,74 +74,132 @@ public class Summarize : MonoBehaviour
         {
             Debug.LogError("PieChart component is not assigned in the Inspector.");
         }
+
+        if (mqttManager != null)
+        {
+            mqttManager.OnMessageReceived += HandleMqttMessage; // Subscribe to MQTT messages
+        }
+        else
+        {
+            Debug.LogError("MQTT Manager is not assigned in the Inspector.");
+        }
     }
 
     void Start()
     {
-        // Start coroutine to fetch and update data
-        StartCoroutine(UpdateDashboard());
+        if (!string.IsNullOrEmpty(apiUrl))
+        {
+            StartCoroutineSafely();
+        }
+        else
+        {
+            Debug.LogWarning("API URL is empty. Waiting for MQTT message to set the URL.");
+        }
     }
 
-    IEnumerator UpdateDashboard()
+    private void StartCoroutineSafely()
     {
-        while (true) // Loop to refresh data continuously
+        if (updateCoroutine != null)
         {
-            // Make an API request
+            StopCoroutine(updateCoroutine);
+        }
+        updateCoroutine = StartCoroutine(UpdatePieChartData());
+    }
+
+    private IEnumerator UpdatePieChartData()
+    {
+        if (string.IsNullOrEmpty(apiUrl))
+        {
+            Debug.LogWarning("API URL is not set. Cannot fetch data.");
+            yield break;
+        }
+
+        Debug.Log($"Fetching data from API: {apiUrl}");
+        while (true)
+        {
             using (UnityWebRequest webRequest = UnityWebRequest.Get(apiUrl))
             {
                 webRequest.SetRequestHeader("Accept", "application/json");
                 yield return webRequest.SendWebRequest();
 
-                if (webRequest.result == UnityWebRequest.Result.ConnectionError || webRequest.result == UnityWebRequest.Result.ProtocolError)
+                if (webRequest.result != UnityWebRequest.Result.Success)
                 {
-                    Debug.LogError("API request failed: " + webRequest.error);
+                    Debug.LogError($"API request failed: {webRequest.error}");
                 }
                 else
                 {
-                    // Retrieve JSON data
                     string jsonData = webRequest.downloadHandler.text;
-                    Debug.Log("API response: " + jsonData);
+                    Debug.Log($"API response: {jsonData}");
 
-                    // Parse JSON data
                     SurveyData parsedData = JsonUtility.FromJson<SurveyData>(jsonData);
-
-                    // Update UI elements with the parsed data
                     UpdateUI(parsedData);
-
-                    // Update pie chart with the data
                     UpdatePieChart(parsedData);
                 }
             }
 
-            // Wait for 10 seconds before updating again
-            yield return new WaitForSeconds(10f);
+            yield return new WaitForSeconds(30f); // Refresh every 30 seconds
         }
     }
 
-    void UpdateUI(SurveyData data)
+    private void HandleMqttMessage(string topic, string message)
     {
-        // Check if data was successfully retrieved and contains valid survey data
+        Debug.Log($"MQTT Message Received - Topic: {topic}, Message: {message}");
+
+        if (topic.TrimEnd('/') == "student/CASA0014/ucfnuoa")
+        {
+            try
+            {
+                var parsedMessage = JObject.Parse(message);
+                if (parsedMessage.TryGetValue("button", out JToken buttonToken) && buttonToken.Type == JTokenType.String)
+                {
+                    var buttonValue = buttonToken.ToString();
+                    Debug.Log($"Button value parsed: {buttonValue}");
+
+                    switch (buttonValue)
+                    {
+                        case "0":
+                            apiUrl = apiUrls[0];
+                            break;
+                        case "1":
+                            apiUrl = apiUrls[1];
+                            break;
+                        case "2":
+                            apiUrl = apiUrls[2];
+                            break;
+                        default:
+                            Debug.LogWarning($"Unknown button value: {buttonValue}");
+                            return;
+                    }
+
+                    Debug.Log($"API URL updated to: {apiUrl}");
+                    StartCoroutineSafely(); // Restart the coroutine with the new API URL
+                }
+                else
+                {
+                    Debug.LogWarning("Button field is missing or not a string.");
+                }
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogError($"Error parsing MQTT message: {ex.Message}");
+            }
+        }
+        else
+        {
+            Debug.LogWarning($"Received message for unexpected topic: {topic}");
+        }
+    }
+
+    private void UpdateUI(SurveyData data)
+    {
         if (data.ok && data.surveys.Length > 0)
         {
-            Survey survey = data.surveys[0]; // Only handle the first survey data
+            Survey survey = data.surveys[0];
 
-            // Update survey name
             surveyNameText.text = survey.name;
-
-            // Count total seats
-            int totalSeats = survey.sensors_occupied + survey.sensors_absent;
-
-            // Update sensor status
             sensorsOccupiedText.text = $"Occupied: {survey.sensors_occupied}";
             sensorsAbsentText.text = $"Absent: {survey.sensors_absent}";
-            sensorsOtherText.text = $"Total: {totalSeats}";
-
-            // If there are multiple maps, handle them accordingly
-            if (survey.maps.Length > 0)
-            {
-                Map map = survey.maps[0]; // Only handle the first map data
-                Debug.Log($"Map Name: {map.name}, Occupied Sensors: {map.sensors_occupied}");
-            }
+            sensorsOtherText.text = $"Total: {survey.sensors_occupied + survey.sensors_absent}";
         }
         else
         {
@@ -139,25 +207,15 @@ public class Summarize : MonoBehaviour
         }
     }
 
-    void UpdatePieChart(SurveyData data)
+    private void UpdatePieChart(SurveyData data)
     {
-        // Clear existing data in PieChart
-       // pieChart.ClearData();   
-
-        // Check if data was successfully retrieved and contains valid survey data
         if (data.ok && data.surveys.Length > 0)
         {
+            Survey survey = data.surveys[0];
 
-            Debug.Log("test");
-            Survey survey = data.surveys[0]; // Only handle the first survey data
+            pieChart.UpdateData("serie0", 0, survey.sensors_absent);
+            pieChart.UpdateData("serie0", 1, survey.sensors_occupied);
 
-            // Add data to the PieChart
-            pieChart.UpdateData("serie0",0, survey.sensors_absent);
-            pieChart.UpdateData("serie0",1, survey.sensors_occupied);
-          
-
-
-            // Refresh the chart to display the new data
             pieChart.RefreshChart();
         }
         else
