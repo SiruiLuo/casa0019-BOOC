@@ -4,6 +4,8 @@
 
 # UCL Library Occupancy Visualizer
 
+![The BoOc](https://github.com/SiruiLuo/casa0019-BOOC/blob/main/Images/TheBooc.jpg)
+
 ## Project Overview
 This group project is a data-visualizing device designed to acquire and display information about the occupancy levels of three libraries on the UCL campus using the UCL API. The device's core features a gauge housed within a book enclosure, which shows the selected library's live occupancy level in percentages for any given time between 9:00 and 17:00.
 
