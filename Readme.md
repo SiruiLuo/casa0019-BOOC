@@ -52,7 +52,7 @@ For the digital augmentation of the device, there had to be a physical trigger, 
 
 ## Hardware Part
 
-<p style="font-size: 20px; font-weight: bold;">1. Components & Schematic</p>
+**1. Components & Schematic**
 
 The hardware of BoOC, in addition to the casing, includes a Waveshare 4.2-inch E-ink screen, an ESP32 DEVKIT V1, a 300 degree servo, a power bank, three spring switches, three 1k ohm resistors and several wires. ESP32 directly receives battery power and distributes electrical energy to other components. Pin 13 is used to control the servo, while pins 25, 26, and 27 are used to control three switches embedded with pull-up resistors. The specific schematic diagram (Pic.4) and the real circuit (Pic.5) are as follows:
 
@@ -68,7 +68,7 @@ The hardware of BoOC, in addition to the casing, includes a Waveshare 4.2-inch E
   <b>Pic.5:</b> The Circuit in BoOC
 </p>
 
-<p style="font-size: 20px; font-weight: bold;">2. Code & Logic</p>
+**2. Code & Logic**
 
 2.1 Data Acquisition & Network Services 
 
@@ -86,7 +86,7 @@ In this part, I used the GxEPD2 library to develop Eink screens with ESP32. But 
 
 After drawing elements that will not change on different interfaces, such as maps and artistic fonts, I encapsulated progress bars for displaying occupancy rates and label functions for displaying percentages, and extracted data in real-time from macro defined arrays and implanted them into these functions to achieve interface data visualization.
 
-**2.3 Buttons and Servo**
+2.3 Buttons and Servo
 
 The button is used to switch pages, and the three buttons correspond to three different libraries. Therefore, I designed a counter to monitor the number of times the button is pressed, which is used to determine whether to switch between pages belonging to this library or other libraries. Pressing the same button can switch pages according to "Home" - "Map and total occupancy rate of this library" - "Occupancy rate of different floors of this library". Every time you switch to 'Map of this library and total occupancy rate', the rotation of the servo will be triggered. As the occupancy rate from 0% to 100% has already been mapped to an angle of 0 to 270 degrees during shell modeling, the servo will slowly rotate to the corresponding percentage. Below is the index page design (Pic.7):
 
