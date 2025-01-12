@@ -96,4 +96,57 @@ The button is used to switch pages, and the three buttons correspond to three di
   <b>Pic.7:</b> Index Page Design
 </p>
 
+## Project OverviewDashboard Visualization Component Development and Data Parsing and Interaction
+**1. Dashboard Design and Style**
 
+To align with the overall theme and the physical device's style, the digital dashboard was created using Unity software. A vintage aesthetic was chosen, consistent with the book-like appearance of the physical device, aiming to provide users with a cohesive and immersive experience. The dashboard features a panel with dimensions of 190mm x 260mm, primarily in wood and beige tones. Its core components include a Pie Chart, Line Chart, Maps, Date and Time Display, Text Prompts, and Library Names. 
+
+They are designed to listen to MQTT's real-time messages from the physical device, ensuring that data is obtained instantly and can react in sync with the physical one. The Pie Chart dynamically visualizes the seat status, and the Line chart displays average occupancy trends over time. The Maps section attempts to provide users with accurate seating layouts. At the same time, both the Time section and TextMeshPros detailing the number of seats are displayed in a clear and concise way. 
+
+ All these components are dynamically controlled through external data processed via custom scripts, which provides users with a seamless and interactive experience. 
+
+**2. Chart Visualizations** 
+
+2.1 Pie Chart 
+
+The PieChart is designed using the XCharts library, positioned in the middle-right section. It provides a real-time comparison of library seat usage, showing the proportions of vacant and occupied seats. This data comes from an external API (Summar_data) that is updated every minute to ensure real-time accuracy, and is visualized using code from Summarize.cs. By parsing the obtained JSON responses, the chart dynamically reflects the number of sensors occupied and absent in a particular survey. Hence, it enhances data visualization and offers users a more intuitive understanding of the library's current status.  
+
+ 
+
+2.2 Line Chart 
+
+Located in the middle-left section, the line chart presents trends in hourly average seat occupancy over a week, based on data from average_data. The raw dataset provides ten-minute averages of occupied and vacant seats over seven days. For better readability, only data between 9:00 and 17:00 is displayed, as these are the library's operational hours. This selective visualization offers users a longer-term perspective on library usage patterns, enabling informed decision-making and providing valuable insights for future predictions regarding the library's occupancy levels. 
+
+ 
+
+2.3 Maps 
+
+Dynamically generated maps, sourced from map_data, are displayed upon switching libraries. These visualizations aim to familiarize users with the spatial layout of the selected library, improving navigation and understanding of the space. 
+
+2.4 TextMeshPro 
+
+The TextMeshPro area mainly displays the current time (date, day, and time) and the library's real-time seating status (number of all seats, occupied seats and empty seats), which enhances the user experience by presenting key survey details. These textual are updated at the same time as the pie chart, ensuring consistency and fluency in data acquisition and presentation.  
+
+According to the MQTT messages received from different buttons, such as buttonValue = "0", "1", "2", the HandleMqttMessage function in Summarize.cs will call different APIs to update the real-time situation of the library.  
+
+**3. MQTT Data Reception and API Parsing**
+
+The digital system's primary challenge is managing data from MQTT messages and API responses simultaneously. The data transmission workflow begins with the physical device, where users press one of three buttons (labelled 0, 1, and 2), each representing a specific library. This interaction sends data via MQTT to the digital dashboard. The MQTT messages, initially formatted as Python datasets, are decoded into a structure compatible with Unity. (implemented in the mqttManager.cs). 
+
+To enable seamless switching between datasets for different libraries, the decoded button data is used to dynamically select and drive the appropriate API. This mechanism ensures the system retrieves and displays data corresponding to the selected library. By integrating MQTT and API data processing, the dashboard provides real-time and contextually accurate information, effectively bridging physical interactions with digital visualisations.  
+
+**4. AR interaction**
+
+4.1 Adding interaction & Image Target Trigger 
+
+Additionally, we have integrated our Booc dynamic model into the AR environment, enhancing a more immersive and comprehensive visualization. 
+
+The individual widgets displayed in the AR Booc, such as the panel and the ball, are exactly the same as those shown in the physical one. We also used Leantouch and TapToplace, so users can place and move the Booc by simply clicking twice, and a single click can open the book and display animations. Meanwhile, users can rotate it by two fingers, and zoom in or out by three fingers.  
+
+By setting up the ReferenceImageLibrary and attaching our bookmark photo to it, as well as combine the newspaper with an animation of the UCL school gate (quad.fbx). After scanning the bookmark with the phone, we will see a gorgeous opening is triggered. 
+
+4.2 Animation 
+
+In order to enable users to open the book with a single click, we integrated the FBX animation (booc_all3) with the Dashboard's Prefab. 
+
+We first created an AnimatorController (BoocAnimatorController) in the Assets folder. By double-clicking it and dragging the booc_all3 animation into it, a new scene is generated and automatically connected to the Entry block to ensure that the animation can start smoothly. After that, the BoocAnimatorController should be mounted to the Animator component of the booc_all3 model. In this way, the animation can be played normally, and bring users a more vivid and interesting visual experience.  
