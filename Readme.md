@@ -34,7 +34,7 @@ After the "Magic Book" concept was finalised, the design keywords were obtained 
 The design phase involved four aspects of the book: size, structure, material, and details. In the size section, the prime operation was to calculate and test the internal space, place the required hardware in 3D software, RHINO, and determine the final size that could accommodate all the components and be suitable for hand-held, which is 260mm in length,180mm in width and 44mm in height. The structure section focused on the hinge design and tested how the dimensions in the switching state would impact the internal components. In terms of materials, to fit in with style, we chose the 3mm composite wood boards, which are wooden in colour with wood grain. For details, some tiny cracks and irregular notches were added to enhance the visual effect and style. 
 
 <p align="center">
-  <img src="Images/color test.jpg" alt="Pic.1: color test for making a vintage paper look for the gauge" width="300">
+  <img src="Images/Draft.jpg" alt="Pic.1: color test for making a vintage paper look for the gauge" width="300">
   <br>
   <b>Pic.1:</b> color test for making a vintage paper <br> look for the gauge
 </p>
@@ -62,7 +62,24 @@ For the digital augmentation of the device, there had to be a physical trigger, 
   <b>Pic.3:</b> Laser cutting The BoOc Marker design with the shape of a feather
 </p>
 
+## Fabrication
 
+<p align="center">
+  <table>
+    <tr>
+      <td><img src="Images/Rhino.png" alt="图1" width="200"/></td>
+      <td><img src="Images/cutting.jpg" alt="图2" width="200"/></td>
+    </tr>
+    <tr>
+      <td><img src="Images/Aging.png" alt="图3" width="200"/></td>
+      <td><img src="Images/Empty.jpg" alt="图4" width="200"/></td>
+    </tr>
+  </table>
+</p>
+
+
+
+Based on the need for a wood effect, the shell was laser cut rather than 3D printed. With the aid of 3D modelling, a flat pattern was drawn for the laser cut, and the two modes of penetration and carving were differentiated to obtain a wood piece with a ‘cracked’ effect. Since the only material available was a new glossy wood-coloured composite template, the acrylic paints should be mixed to colour the boards to generate an ‘old wood’ effect. The following step was sanding the sharp edges, and the logo was painted bright gold. Finally, all the pieces were assembled into the finished device housing.
 ## Hardware Part
 
 **1. Components & Schematic**
