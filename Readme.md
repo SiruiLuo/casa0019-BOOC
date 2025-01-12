@@ -103,7 +103,13 @@ To align with the overall theme and the physical device's style, the digital das
 
 They are designed to listen to MQTT's real-time messages from the physical device, ensuring that data is obtained instantly and can react in sync with the physical one. The Pie Chart dynamically visualizes the seat status, and the Line chart displays average occupancy trends over time. The Maps section attempts to provide users with accurate seating layouts. At the same time, both the Time section and TextMeshPros detailing the number of seats are displayed in a clear and concise way. 
 
- All these components are dynamically controlled through external data processed via custom scripts, which provides users with a seamless and interactive experience. 
+ All these components are dynamically controlled through external data processed via custom scripts, which provides users with a seamless and interactive experience. Below is the dashboard design (Pic.8):
+
+ <p align="center">
+  <img src="Images/AR Booc.png" alt="Pic.7: Index Page Design" width="300">
+  <br>
+  <b>Pic.8:</b> Dashboard Design and Style
+</p>
 
 **2. Chart Visualizations** 
 
