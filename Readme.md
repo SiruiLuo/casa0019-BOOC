@@ -15,7 +15,7 @@
 ## Project Overview
 This group project is a data-visualizing device designed to acquire and display information about the occupancy levels of three libraries on the UCL campus using the UCL API. The device's core features a gauge housed within a book enclosure, which shows the selected library's live occupancy level in percentages for any given time between 9:00 and 17:00.
 
-The integrated app for this device also generates a 3D augmentation of the book. It displays a detailed dashboard of information for each selected library, controlled by the buttons on the book. This device helps users better understand the state of each library through various mediums and visualizations.
+The integrated app for this device also generates a 3D augmentation of the book. It displays a detailed dashboard of information for each selected library, controlled by the buttons on the book. This device helps users better understand the state of each library through various visualizations.
 
 For more information please visit [our website](https://siruiluo.github.io/casa0019-BOOC/)
 
@@ -102,7 +102,7 @@ For data acquisition, UCL's two APIs in Workspace were used to obtain occupancy 
 
 2.2 Interface Design
 
-In this part, I used the GxEPD2 library to develop Eink screens with ESP32. But the GxEPD2 library cannot fully support all ESP32 boards on the market. After testing, this library is not fully available for my development board. But after modifying some of the hardware drivers with low-level I2C serial ports and reconstructing the underlying functions for controlling multiple screen pixels, this problem was solved. Secondly, due to the fact that development boards based on Arduino IDE do not have the ability to directly store native images such as JPG, displaying images on Eink can only be done by translating the images into binary matrices and storing them in PROMEM according to Eink's coloring rules. Therefore, I used GIMP to translate the images, generated binary XBM files, and stored the translated results in different PROMEM arrays in images. h, as follows (Pic.6):
+In this part, I used the GxEPD2 library to develop Eink screens with ESP32. But the GxEPD2 library cannot fully support all ESP32 boards on the market. After testing, this library is not fully available for my development board. But after modifying some of the hardware drivers with low-level I2C serial ports and reconstructing the underlying functions for controlling multiple screen pixels, this problem was solved. Secondly, due to the fact that development boards based on Arduino IDE do not have the ability to directly store native images such as JPG, displaying images on Eink can only be done by translating the images into binary matrices and storing them in PROMEM according to Eink's coloring rules. Therefore, I used GIMP to translate the images, generated binary XBM files, and stored the translated results in different PROMEM arrays in images. h (Pic.6):
 
 <p align="center">
   <img src="Images/Gimp_pic.png" alt="Pic.6: GIMP and Binary Picture Storage" height="400">
@@ -112,7 +112,7 @@ In this part, I used the GxEPD2 library to develop Eink screens with ESP32. But 
 
 2.3 Buttons and Servo
 
-The button is used to switch pages, and the three buttons correspond to three different libraries. Therefore, I designed a counter to monitor the number of times the button is pressed, which is used to determine whether to switch between pages belonging to this library or other libraries. Pressing the same button can switch pages according to "Home" - "Map and total occupancy rate of this library" - "Occupancy rate of different floors of this library". Every time you switch to 'Map of this library and total occupancy rate', the rotation of the servo will be triggered. As the occupancy rate from 0% to 100% has already been mapped to an angle of 0 to 270 degrees during shell modeling, the servo will slowly rotate to the corresponding percentage. Below is the index page design (Pic.7):
+The button is used to switch pages, and the three buttons correspond to three different libraries. Therefore, I designed a counter to monitor the number of times the button is pressed, which is used to determine whether to switch between pages belonging to this library or other libraries. Pressing the same button can switch pages according to "Home" - "Map and total occupancy rate of this library" - "Occupancy rate of different floors of this library". Every time you switch to 'Map of this library and total occupancy rate', the rotation of the servo will be triggered. As the occupancy rate from 0% to 100% has already been mapped to an angle of 0 to 270 degrees during shell modeling, the servo will slowly rotate to the corresponding percentage (Pic.7):
 
 <p align="center">
   <img src="Images/eink.jpg" alt="Pic.7: Index Page Design" width="300">
@@ -125,7 +125,7 @@ The button is used to switch pages, and the three buttons correspond to three di
 
 To align with the overall theme and the physical device's style, the digital dashboard was created using Unity software. A vintage aesthetic was chosen, consistent with the book-like appearance of the physical device, aiming to provide users with a cohesive and immersive experience. The dashboard features a panel with dimensions of 190mm x 260mm, primarily in wood and beige tones. Its core components include a Pie Chart, Line Chart, Maps, Date and Time Display, Text Prompts, and Library Names. 
 
-They are designed to listen to MQTT's real-time messages from the physical device, ensuring that data is obtained instantly and can react in sync with the physical one. The Pie Chart dynamically visualizes the seat status, and the Line chart displays average occupancy trends over time. The Maps section attempts to provide users with accurate seating layouts. At the same time, both the Time section and TextMeshPros detailing the number of seats are displayed in a clear and concise way. 
+They are designed to listen to MQTT's real-time messages from the physical device, ensuring that data is obtained instantly and can react in sync with the physical one. The Pie Chart dynamically visualizes the seat status, and the Line chart displays average occupancy trends over time. 
 
  <p align="center">
   <img src="Images/AR Booc.png" alt="Pic.7: Index Page Design" width="300">
