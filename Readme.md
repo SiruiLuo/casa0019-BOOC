@@ -34,7 +34,7 @@ After the "Magic Book" concept was finalised, the design keywords were obtained 
 The design phase involved four aspects of the book: size, structure, material, and details. In the size section, the prime operation was to calculate and test the internal space, place the required hardware in 3D software, RHINO, and determine the final size that could accommodate all the components and be suitable for hand-held, which is 260mm in length,180mm in width and 44mm in height. The structure section focused on the hinge design and tested how the dimensions in the switching state would impact the internal components. In terms of materials, to fit in with style, we chose the 3mm composite wood boards, which are wooden in colour with wood grain. For details, some tiny cracks and irregular notches were added to enhance the visual effect and style. 
 
 <p align="center">
-  <img src="Images/Draft.jpg" alt="Pic.1: color test for making a vintage paper look for the gauge" width="300">
+  <img src="Images/Draft.jpg" alt="Pic.1: The draft of initial idea" width="300">
   <br>
   <b>Pic.1:</b> color test for making a vintage paper <br> look for the gauge
 </p>
@@ -64,18 +64,14 @@ For the digital augmentation of the device, there had to be a physical trigger, 
 
 ## Fabrication
 
-<p align="center">
-  <table>
-    <tr>
-      <td><img src="Images/Rhino.png" alt="图1" width="200"/></td>
-      <td><img src="Images/cutting.jpg" alt="图2" width="200"/></td>
-    </tr>
-    <tr>
-      <td><img src="Images/Aging.png" alt="图3" width="200"/></td>
-      <td><img src="Images/Empty.jpg" alt="图4" width="200"/></td>
-    </tr>
-  </table>
-</p>
+<div align="center">
+  <img src="Images/Rhino.png" alt="图1" width="200"/>
+  <img src="Images/cutting.jpg" alt="图2" width="200"/>
+</div>
+<div align="center">
+  <img src="Images/Aging.png" alt="图3" width="200"/>
+  <img src="Images/Empty.jpg" alt="图4" width="200"/>
+</div>
 
 
 
@@ -186,3 +182,7 @@ By setting up the ReferenceImageLibrary and attaching our bookmark photo to it, 
 In order to enable users to open the book with a single click, we integrated the FBX animation (booc_all3) with the Dashboard's Prefab. 
 
 We first created an AnimatorController (BoocAnimatorController) in the Assets folder. By double-clicking it and dragging the booc_all3 animation into it, a new scene is generated and automatically connected to the Entry block to ensure that the animation can start smoothly. After that, the BoocAnimatorController should be mounted to the Animator component of the booc_all3 model. In this way, the animation can be played normally, and bring users a more vivid and interesting visual experience.  
+
+4.3 Interactive news modules 
+
+The device has a more significant potential as a vehicle for everyday information access, such as sharing some information advice. An image recognition function is used, whereby the campus newspaper appears when the back of the cover is scanned by the AR program, displaying the day's news. The news in the display was that in January 2025, UCL's Quad will be temporarily closed for renovation. To enhance the experience, an animation was created for the Quad model after it was downloaded from Sketchfab, achieving the effect of transitioning from a flat image to a three-dimensional model.
