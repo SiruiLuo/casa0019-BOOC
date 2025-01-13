@@ -110,8 +110,6 @@ In this part, I used the GxEPD2 library to develop Eink screens with ESP32. But 
   <b>Pic.6:</b> GIMP and Binary Picture Storage
 </p>
 
-After drawing elements that will not change on different interfaces, such as maps and artistic fonts, I encapsulated progress bars for displaying occupancy rates and label functions for displaying percentages, and extracted data in real-time from macro defined arrays and implanted them into these functions to achieve interface data visualization.
-
 2.3 Buttons and Servo
 
 The button is used to switch pages, and the three buttons correspond to three different libraries. Therefore, I designed a counter to monitor the number of times the button is pressed, which is used to determine whether to switch between pages belonging to this library or other libraries. Pressing the same button can switch pages according to "Home" - "Map and total occupancy rate of this library" - "Occupancy rate of different floors of this library". Every time you switch to 'Map of this library and total occupancy rate', the rotation of the servo will be triggered. As the occupancy rate from 0% to 100% has already been mapped to an angle of 0 to 270 degrees during shell modeling, the servo will slowly rotate to the corresponding percentage. Below is the index page design (Pic.7):
@@ -128,8 +126,6 @@ The button is used to switch pages, and the three buttons correspond to three di
 To align with the overall theme and the physical device's style, the digital dashboard was created using Unity software. A vintage aesthetic was chosen, consistent with the book-like appearance of the physical device, aiming to provide users with a cohesive and immersive experience. The dashboard features a panel with dimensions of 190mm x 260mm, primarily in wood and beige tones. Its core components include a Pie Chart, Line Chart, Maps, Date and Time Display, Text Prompts, and Library Names. 
 
 They are designed to listen to MQTT's real-time messages from the physical device, ensuring that data is obtained instantly and can react in sync with the physical one. The Pie Chart dynamically visualizes the seat status, and the Line chart displays average occupancy trends over time. The Maps section attempts to provide users with accurate seating layouts. At the same time, both the Time section and TextMeshPros detailing the number of seats are displayed in a clear and concise way. 
-
- All these components are dynamically controlled through external data processed via custom scripts, which provides users with a seamless and interactive experience. Below is the dashboard design (Pic.8):
 
  <p align="center">
   <img src="Images/AR Booc.png" alt="Pic.7: Index Page Design" width="300">
@@ -163,8 +159,6 @@ According to the MQTT messages received from different buttons, such as buttonVa
 **3. MQTT Data Reception and API Parsing**
 
 The primary challenge of the digital system is managing data from MQTT messages and API responses simultaneously. The data transmission workflow begins with the physical device, where users press one of three buttons (labelled 0, 1, and 2), each representing a specific library. This interaction sends data via MQTT to the digital dashboard. The MQTT messages, initially formatted as Python datasets, are decoded into a structure compatible with Unity (implemented in mqttManager.cs).
-
-To enable seamless switching between datasets for different libraries, the decoded button data is used to dynamically select and drive the appropriate API. This mechanism ensures the system retrieves and displays data corresponding to the selected library. By integrating MQTT and API data processing, the dashboard provides real-time and contextually accurate information, effectively bridging physical interactions with digital visualizations.
 
 
 **4. AR interaction**
