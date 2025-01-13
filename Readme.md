@@ -29,9 +29,9 @@ You can also download our unity project here [Unity Project Download](https://1d
 The device's design stemmed from the idea of a classic library with all the books. Making a book as a storytelling device and incorporating the technology of IoT within the book was a close-to-magic juxtaposition, restating the idea of the technology itself that has been regarded as a sort of magic for decades (McEwen, A, & Cassimally, H 2013). 
 
 <p align="center">
-  <img src="Images/color test.jpg" alt="Pic.1: color test for making a vintage paper look for the gauge" width="300">
+  <img src="Images/Draft.jpg" alt="Pic.1: color test for making a vintage paper look for the gauge" width="300">
   <br>
-  <b>Pic.1:</b> Draft of the enclosure
+  <b>Draft of the enclosure</b>
 </p>
 
 After the "Magic Book" concept was finalised, the design keywords were obtained through brainstorming, such as "unique, interactive, effective, and appealing." After setting up several design styles that fit the keywords, such as "ancient and mysterious" and "high-tech.", a magical, whimsical, and mysterious style was preferred. Representative movies and TV shows like Harry Potter were used as visual style references to make the IoT technology enjoyable. The design concept of the final product is perfectly reflected by the retro and mysterious book cover and the CASA logo, which symbolises the connection of all things.
