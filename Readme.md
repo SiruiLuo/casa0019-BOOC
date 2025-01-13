@@ -33,12 +33,6 @@ After the "Magic Book" concept was finalised, the design keywords were obtained 
 ## Enclosure Design
 The design phase involved four aspects of the book: size, structure, material, and details. In the size section, the prime operation was to calculate and test the internal space, place the required hardware in 3D software, RHINO, and determine the final size that could accommodate all the components and be suitable for hand-held, which is 260mm in length,180mm in width and 44mm in height. The structure section focused on the hinge design and tested how the dimensions in the switching state would impact the internal components. In terms of materials, to fit in with style, we chose the 3mm composite wood boards, which are wooden in colour with wood grain. For details, some tiny cracks and irregular notches were added to enhance the visual effect and style. 
 
-<p align="center">
-  <img src="Images/Draft.jpg" alt="Pic.1: The draft of initial idea" width="300">
-  <br>
-  <b>Pic.1:</b> color test for making a vintage paper <br> look for the gauge
-</p>
-
 Inside the book, a gauge blended on a surface, resembling a paper page, shows the occupancy level percentage inside each chosen library by feeding on live data from the API. The idea of showing the map of the libraries has also led to a decision to use a screen in the device. However, to maintain the style and theme of the project, the digital screen was replaced with an E-ink screen. For user integration, three buttons were placed on the surface to control the information displayed on the E-ink screen and to choose between three different libraries. All these components were placed in a unique composition, and the 3D-printed surface was painted on warm white (creating a paper effect) to give the device a vintage feel (Pic.1). In the gauge design, instead of using a simple pointer like a clock or a regular pin, a metal ball was placed on a round rail to show the percentage. Three main issues were to be considered when designing the gauge. First, the use of a servo and the range of the angular movement of the pin. Second, the distance between the magnet attached to the servo pin and the metal ball. Finally, the readability of the numbering and index design are shown (Pic.2). 
 
 <p align="center">
