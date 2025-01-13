@@ -65,12 +65,12 @@ For the digital augmentation of the device, there had to be a physical trigger, 
 ## Fabrication
 
 <div align="center">
-  <img src="Images/Rhino.png" alt="图1" width="200"/>
-  <img src="Images/cutting.jpg" alt="图2" width="200"/>
+  <img src="Images/Rhino.png" alt="图1" width="250"/>
+  <img src="Images/cutting.jpg" alt="图2" width="250"/>
 </div>
 <div align="center">
-  <img src="Images/Aging.png" alt="图3" width="200"/>
-  <img src="Images/Empty.jpg" alt="图4" width="200"/>
+  <img src="Images/Aging.png" alt="图3" width="250"/>
+  <img src="Images/Empty.jpg" alt="图4" width="250"/>
 </div>
 
 
