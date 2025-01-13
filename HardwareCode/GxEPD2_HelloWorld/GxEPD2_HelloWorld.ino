@@ -11,7 +11,7 @@
 #include <HTTPClient.h>
 #include <ESP32Servo.h>
 
-Servo myServo;  // 创建一个 ESP32Servo 对象来控制伺服电机
+Servo myServo;  
 
 // select the display class and display driver class in the following file (new style):
 #include "GxEPD2_display_selection_new_style.h"
@@ -21,12 +21,12 @@ Servo myServo;  // 创建一个 ESP32Servo 对象来控制伺服电机
 #include "GxEPD2_display_selection_added.h"
 #include "images.h"
 
-#define BUTTON1  25  // 下一页按钮引脚
-#define BUTTON2  26  // 上一页按钮引脚
-#define BUTTON3  27  // 返回主页按钮引脚
+#define BUTTON1  25  
+#define BUTTON2  26  
+#define BUTTON3  27  
 
-int currentPage = 0;      // 当前页面编号
-const int totalPages = 5; // 页面总数
+int currentPage = 0;     
+const int totalPages = 5; 
 
 int bt1count = 0;
 int bt2count = 0;
@@ -37,60 +37,57 @@ int bt3count = 0;
 
 // for handling alternative SPI pins (ESP32, RP2040) see example GxEPD2_Example.ino
 
-// 定义用于存储 JSON 响应数据的结构体
+
 struct Time {
-  int tm;                 // 时间
-  int sensors_absent;     // 未使用传感器数量
-  int sensors_occupied;   // 已使用传感器数量
-  int sensors_total;      // 总传感器数量
+  int tm;                 
+  int sensors_absent;     
+  int sensors_occupied;   
+  int sensors_total;      
 };
 
 struct Averages {
-  Time hours[24];         // 每小时的数据
+  Time hours[24];         
 };
 
 struct Map {
-  int id;                 // 地图 ID
-  String name;            // 地图名称
-  int sensors_absent;     // 未使用传感器数量
-  int sensors_occupied;   // 已使用传感器数量
+  int id;                 
+  String name;            
+  int sensors_absent;     
+  int sensors_occupied; 
 };
 
 struct Survey {
-  int id;                 // 调查 ID
-  String name;            // 调查名称
-  int sensors_occupied;   // 已使用传感器数量
-  int sensors_absent;     // 未使用传感器数量
-  int sensors_other;      // 其他传感器数量
-  Map maps[10];           // 假设每个调查最多有 10 个地图
-  Averages averages;     // 平均时间数量
+  int id;                 
+  String name;            
+  int sensors_occupied;   
+  int sensors_absent;     
+  int sensors_other;      
+  Map maps[10];           
+  Averages averages;     
 };
 
 struct Root {
-  bool ok;                // 请求是否成功的标志
-  Survey surveys[10];     // 假设最多有 10 个调查
+  bool ok;                
+  Survey surveys[10];     
 };
 
-Root myRoot;              // 定义全局变量存储解析结果
+Root myRoot;              
 
-// MQTT 服务器配置
-const char* mqttServer = "mqtt.cetools.org"; // MQTT 服务器地址
-const int mqttPort = 1884;                   // MQTT 端口
-const char* mqttUser = "student";          // MQTT 用户名
-const char* mqttPassword = "ce2021-mqtt-forget-whale";        // MQTT 密码
-const char* mqttTopic = "student/CASA0014/ucfnuoa/";        // MQTT 发布主题
+
+const char* mqttServer = "mqtt.cetools.org"; 
+const int mqttPort = 1884;                   
+const char* mqttUser = "student";          
+const char* mqttPassword = "ce2021-mqtt-forget-whale";        
+const char* mqttTopic = "student/CASA0014/ucfnuoa/";        
 
 WiFiClient espClient;
 PubSubClient client(espClient);
 
-unsigned long previousMillis = 0; // 用于存储上一次请求的时间
-const long interval = 60000;      // 请求间隔时间，设置为 15 秒
+unsigned long previousMillis = 0; 
+const long interval = 60000;      
 
-// Wi-Fi 配置信息
-//const char* ssid = "CE-Hub-Staff";
-//const char* password = "casa-ce-sputnik-pbs-camper";
 int surveycount = 0;
-// 更新时标志是否为首次加载
+
 bool isFirstLoad = true;
 const char* ssid = "Pixel_3221";
 const char* password = "20010906";
@@ -109,7 +106,7 @@ String apiUrl6 = "https://uclapi.com/workspaces/sensors/averages/time?days=1&sur
 void setup()
 {
 
-  myServo.attach(13);  // 将伺服连接到 ESP32 的 D13 引脚
+  myServo.attach(13);  
   myServo.write(171);
   delay(1000);
 
@@ -119,7 +116,7 @@ void setup()
   
     //display.init(115200); // default 10ms reset pulse, e.g. for bare panels with DESPI-C02
   Serial.begin(115200);
-  // 连接 Wi-Fi
+
   WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED) {
     delay(1000);
@@ -130,82 +127,82 @@ void setup()
   client.setServer(mqttServer, mqttPort);
   connectToMQTT();
 
-  // 启动 HTTP 客户端
-  HTTPClient http;
-  http.begin(apiUrl1); // 使用第一个 API URL
 
-  // 发送请求并接收响应
+  HTTPClient http;
+  http.begin(apiUrl1); 
+
+  
   int httpCode = http.GET();
   if (httpCode == HTTP_CODE_OK) {
     String payload = http.getString();
-    deserializeJsonData(payload, 1); // 调用解析函数
+    deserializeJsonData(payload, 1);
   } else {
     Serial.println("Failed to connect to API 1");
   }
   
-  http.end();  // 结束第一个请求
+  http.end(); 
 
-  // 发送第二个请求
-  http.begin(apiUrl2); // 使用第二个 API URL
+
+  http.begin(apiUrl2); 
 
   httpCode = http.GET();
   if (httpCode == HTTP_CODE_OK) {
     String payload = http.getString();
-    deserializeJsonData(payload, 2); // 调用解析函数
+    deserializeJsonData(payload, 2); 
   } else {
     Serial.println("Failed to connect to API 2");
   }
 
-  http.end();  // 结束第二个请求
+  http.end();  
 
-    // 发送第三个请求
-  http.begin(apiUrl3); // 使用第三个 API URL
+   
+  http.begin(apiUrl3); 
 
   httpCode = http.GET();
   if (httpCode == HTTP_CODE_OK) {
     String payload = http.getString();
-    deserializeJsonData(payload, 1); // 调用解析函数
+    deserializeJsonData(payload, 1); 
   } else {
     Serial.println("Failed to connect to API 3");
   }
 
-  http.end();  // 结束第二个请求
+  http.end();  
 
-  http.begin(apiUrl4); // 使用第三个 API URL
+  http.begin(apiUrl4); 
 
   httpCode = http.GET();
   if (httpCode == HTTP_CODE_OK) {
     String payload = http.getString();
-    deserializeJsonData(payload, 2); // 调用解析函数
+    deserializeJsonData(payload, 2); 
   } else {
     Serial.println("Failed to connect to API 4");
   }
 
-  http.end();  // 结束第二个请求
+  http.end(); 
 
-  http.begin(apiUrl5); // 使用第三个 API URL
+  http.begin(apiUrl5); 
 
   httpCode = http.GET();
   if (httpCode == HTTP_CODE_OK) {
     String payload = http.getString();
-    deserializeJsonData(payload, 1); // 调用解析函数
+    deserializeJsonData(payload, 1); 
   } else {
     Serial.println("Failed to connect to API 5");
   }
 
-  http.end();  // 结束第二个请求
+  http.end();  
 
-  http.begin(apiUrl6); // 使用第三个 API URL
+  http.begin(apiUrl6); 
 
   httpCode = http.GET();
   if (httpCode == HTTP_CODE_OK) {
     String payload = http.getString();
-    deserializeJsonData(payload, 2); // 调用解析函数
+    deserializeJsonData(payload, 2); 
   } else {
     Serial.println("Failed to connect to API 6");
   }
 
-  http.end();  // 结束第二个请求
+  http.end(); 
 
   display.init(115200, true, 2, false); // USE THIS for Waveshare boards with "clever" reset circuit, 2ms reset pulse
   helloWorld();
@@ -215,7 +212,7 @@ void setup()
 void connectToMQTT() {
   while (!client.connected()) {
     Serial.println("\u6b63\u5728\u8fde\u63a5\u5230 MQTT \u670d\u52a1\u5668...");
-    if (client.connect("ESP32Client", mqttUser, mqttPassword)) { // 提供用户名和密码
+    if (client.connect("ESP32Client", mqttUser, mqttPassword)) {
       Serial.println("\u5df2\u8fde\u63a5\u5230 MQTT \u670d\u52a1\u5668");
     } else {
       Serial.print("\u8fde\u63a5\u5931\u8d25\uff0c\u72b6\u6001\u7801: ");
@@ -227,13 +224,13 @@ void connectToMQTT() {
 }
 
 
-// 用于更新某个 Survey 数据
+
 void updateSurveyData(Survey &currentSurvey, JsonObject &survey) {
   currentSurvey.sensors_occupied = survey["sensors_occupied"];
   currentSurvey.sensors_absent = survey["sensors_absent"];
   currentSurvey.sensors_other = survey["sensors_other"];
   
-  // 更新 Maps 数据
+  
   JsonArray maps = survey["maps"];
   int mapIndex = 0;
   for (JsonObject map : maps) {
@@ -250,89 +247,89 @@ void fetchingData(){
   if (currentMillis - previousMillis >= interval) {
     previousMillis = currentMillis;
 
-    // 在这里可以添加需要定时执行的代码，比如再次请求 API 或更新数据显示
+   
     Serial.println("Fetching data again...");
     
-    // 启动 HTTP 客户端
+   
     HTTPClient http;
-    http.begin(apiUrl1); // 使用第一个 API URL
+    http.begin(apiUrl1); 
 
-    // 发送请求并接收响应
+    
     int httpCode = http.GET();
     if (httpCode == HTTP_CODE_OK) {
       String payload = http.getString();
-      deserializeJsonData(payload, 1); // 调用解析函数
+      deserializeJsonData(payload, 1); 
     } else {
       Serial.println("Failed to connect to API 1");
     }
     
-    http.end();  // 结束第一个请求
+    http.end();  
 
-    // 发送第二个请求
-    http.begin(apiUrl2); // 使用第二个 API URL
+    
+    http.begin(apiUrl2); 
 
     httpCode = http.GET();
     if (httpCode == HTTP_CODE_OK) {
       String payload = http.getString();
-      deserializeJsonData(payload, 2); // 调用解析函数
+      deserializeJsonData(payload, 2); 
     } else {
       Serial.println("Failed to connect to API 2");
     }
 
-    http.end();  // 结束第二个请求
+    http.end(); 
 
-      // 发送第三个请求
-    http.begin(apiUrl3); // 使用第三个 API URL
+      
+    http.begin(apiUrl3); 
 
     httpCode = http.GET();
     if (httpCode == HTTP_CODE_OK) {
       String payload = http.getString();
-      deserializeJsonData(payload, 1); // 调用解析函数
+      deserializeJsonData(payload, 1); 
     } else {
       Serial.println("Failed to connect to API 3");
     }
 
-    http.end();  // 结束第二个请求
+    http.end(); 
 
-    http.begin(apiUrl4); // 使用第三个 API URL
+    http.begin(apiUrl4); 
 
     httpCode = http.GET();
     if (httpCode == HTTP_CODE_OK) {
       String payload = http.getString();
-      deserializeJsonData(payload, 2); // 调用解析函数
+      deserializeJsonData(payload, 2); 
     } else {
       Serial.println("Failed to connect to API 4");
     }
 
-    http.end();  // 结束第二个请求
+    http.end();  
 
-    http.begin(apiUrl5); // 使用第三个 API URL
+    http.begin(apiUrl5); 
 
     httpCode = http.GET();
     if (httpCode == HTTP_CODE_OK) {
       String payload = http.getString();
-      deserializeJsonData(payload, 1); // 调用解析函数
+      deserializeJsonData(payload, 1); 
     } else {
       Serial.println("Failed to connect to API 5");
     }
 
-    http.end();  // 结束第二个请求
+    http.end();  
 
-    http.begin(apiUrl6); // 使用第三个 API URL
+    http.begin(apiUrl6); 
 
     httpCode = http.GET();
     if (httpCode == HTTP_CODE_OK) {
       String payload = http.getString();
-      deserializeJsonData(payload, 2); // 调用解析函数
+      deserializeJsonData(payload, 2); 
     } else {
       Serial.println("Failed to connect to API 6");
     }
 
-    http.end();  // 结束第二个请求
+    http.end(); 
   }
 }
 
-// 解析 JSON 数据的函数
+
 void deserializeJsonData(String payload, int apiType) {
   DynamicJsonDocument doc(8192);
   DeserializationError error = deserializeJson(doc, payload);
@@ -348,7 +345,7 @@ void deserializeJsonData(String payload, int apiType) {
     for (JsonObject survey : surveys) {
       int surveyID = survey["id"];
       
-      // 查找或创建对应的 Survey 数据
+     
       Survey *currentSurvey = nullptr;
       for (int i = 0; i < surveycount; i++) {
         if (myRoot.surveys[i].id == surveyID) {
@@ -365,7 +362,7 @@ void deserializeJsonData(String payload, int apiType) {
       
       updateSurveyData(*currentSurvey, survey);
 
-      // 构造 Survey 数据并发送
+      
       String surveyData = "Survey|" +
                           String(currentSurvey->id) + "|" +
                           currentSurvey->name + "|" +
@@ -375,7 +372,7 @@ void deserializeJsonData(String payload, int apiType) {
       Serial.println(surveyData);
       delay(100);
 
-      // 更新每个 Map 数据
+      
       JsonArray maps = survey["maps"];
       for (JsonObject map : maps) {
         int mapID = map["id"];
@@ -390,7 +387,7 @@ void deserializeJsonData(String payload, int apiType) {
       }
     }
   } else if (apiType == 2) {
-    // 针对平均值数据处理
+    
     JsonArray surveys = doc["surveys"];
     for (JsonObject survey : surveys) {
       int surveyID = survey["survey_id"];
@@ -409,7 +406,7 @@ void deserializeJsonData(String payload, int apiType) {
       JsonObject averages = survey["averages"];
       for (JsonPair kv : averages) {
         String time = kv.key().c_str();
-        if (time.endsWith(":00:00")) { // 只取整点数据
+        if (time.endsWith(":00:00")) { 
           int hour = time.substring(0, 2).toInt();
           Time &currentTime = currentSurvey->averages.hours[hour];
           JsonObject data = kv.value();
@@ -418,7 +415,7 @@ void deserializeJsonData(String payload, int apiType) {
           currentTime.sensors_occupied = data["sensors_occupied"];
           currentTime.sensors_total = data["sensors_total"];
 
-          // 构造时间数据字符串并通过 Serial2 发送
+          
           String timeData = "Hour|" +
                             String(surveyID) + "|" +
                             String(currentTime.tm) + "|" +
@@ -505,13 +502,13 @@ void Occupancy111(){
     int angle = map(myRoot.surveys[0].sensors_occupied, 0, (myRoot.surveys[0].sensors_occupied + myRoot.surveys[0].sensors_absent), 171, 9);
     if (currentangle <= angle) {
       for (int tempangle = currentangle; tempangle <= angle; tempangle++) {
-      myServo.write(tempangle);  // 设置伺服电机角度
-      delay(15);  // 每次变化之间的延迟，使旋转缓慢
+      myServo.write(tempangle);  
+      delay(15);  
       }
     }else{
       for (int tempangle = currentangle; tempangle >= angle; tempangle--) {
-      myServo.write(tempangle);  // 设置伺服电机角度
-      delay(15);  // 每次变化之间的延迟，使旋转缓慢
+      myServo.write(tempangle);  
+      delay(15);  
       }
     }
     currentangle = angle;
@@ -522,7 +519,7 @@ void Occupancy111(){
     }
     client.loop();
 
-    String jsonMessage = "{\"button\": \"0\"}"; // JSON 格式消息
+    String jsonMessage = "{\"button\": \"0\"}"; 
     client.publish(mqttTopic, jsonMessage.c_str());
     Serial.println("\u5df2\u53d1\u5e03JSON\u6d88\u606f: " + jsonMessage);
 
@@ -627,13 +624,13 @@ void Occupancy116(){
     int angle = map(myRoot.surveys[2].sensors_occupied, 0, (myRoot.surveys[2].sensors_occupied + myRoot.surveys[2].sensors_absent), 171, 9);
     if (currentangle <= angle) {
       for (int tempangle = currentangle; tempangle <= angle; tempangle++) {
-      myServo.write(tempangle);  // 设置伺服电机角度
-      delay(15);  // 每次变化之间的延迟，使旋转缓慢
+      myServo.write(tempangle);  
+      delay(15);  
       }
     }else{
       for (int tempangle = currentangle; tempangle >= angle; tempangle--) {
-      myServo.write(tempangle);  // 设置伺服电机角度
-      delay(15);  // 每次变化之间的延迟，使旋转缓慢
+      myServo.write(tempangle);  
+      delay(15);  
       }
     }
     currentangle = angle;
@@ -644,7 +641,7 @@ void Occupancy116(){
     }
     client.loop();
 
-    String jsonMessage = "{\"button\": \"0\"}"; // JSON 格式消息
+    String jsonMessage = "{\"button\": \"0\"}"; 
     client.publish(mqttTopic, jsonMessage.c_str());
     Serial.println("\u5df2\u53d1\u5e03JSON\u6d88\u606f: " + jsonMessage);
 
@@ -749,13 +746,13 @@ void Occupancy119(){
     int angle = map(myRoot.surveys[1].sensors_occupied, 0, (myRoot.surveys[1].sensors_occupied + myRoot.surveys[1].sensors_absent), 171, 9);
     if (currentangle <= angle) {
       for (int tempangle = currentangle; tempangle <= angle; tempangle++) {
-      myServo.write(tempangle);  // 设置伺服电机角度
-      delay(15);  // 每次变化之间的延迟，使旋转缓慢
+      myServo.write(tempangle);  
+      delay(15);  
       }
     }else{
       for (int tempangle = currentangle; tempangle >= angle; tempangle--) {
-      myServo.write(tempangle);  // 设置伺服电机角度
-      delay(15);  // 每次变化之间的延迟，使旋转缓慢
+      myServo.write(tempangle);  
+      delay(15);  
       }
     }
     currentangle = angle;
@@ -766,7 +763,7 @@ void Occupancy119(){
     }
     client.loop();
 
-    String jsonMessage = "{\"button\": \"0\"}"; // JSON 格式消息
+    String jsonMessage = "{\"button\": \"0\"}"; 
     client.publish(mqttTopic, jsonMessage.c_str());
     Serial.println("\u5df2\u53d1\u5e03JSON\u6d88\u606f: " + jsonMessage);
 
@@ -838,33 +835,33 @@ void Other119(){
 }
 
 void progress_bar(int barlength, int x, int y, int occupied, int absent) {
-    // 总宽度
+    
     int totalWidth = barlength;
 
-    // 将 occupied 映射到 0 到 totalWidth 的范围
+    
     int filledWidth = map(occupied, 0, occupied + absent, 0, totalWidth);
 
-    // 计算百分比，使用浮点数计算并转化为整数百分比
+    
     int percentage = (occupied * 100) / (occupied + absent);
 
-    // 转换为字符串并添加百分号
+    
     String strValue = String(percentage) + "%";
 
-    // 画外框
+    
     display.drawRoundRect(x, y, totalWidth + 10, 30, 15, GxEPD_BLACK);
 
-    // 画填充的部分
+    
     display.fillRoundRect(x + 5, y + 5, filledWidth, 20, 10, GxEPD_BLACK);
 
-    // 显示百分比
+    
     display.setCursor(x + totalWidth + 15, y + 20);
     display.print(strValue);
 }
 
 void buttonlisten(){
-  // 检测按钮1 (下一页)
+
   if (digitalRead(BUTTON1) == LOW) {
-    delay(200); // 消抖
+    delay(200); 
     if (bt1count == 0){
       Occupancy111();
       bt1count++;
@@ -883,9 +880,9 @@ void buttonlisten(){
     }
   }
   
-  // 检测按钮2 (上一页)
+
   if (digitalRead(BUTTON2) == LOW) {
-    delay(200); // 消抖
+    delay(200); 
     if (bt2count == 0){
       Occupancy116();
       bt2count++;
@@ -904,9 +901,9 @@ void buttonlisten(){
     }
   }
 
-  // 检测按钮3 (返回主页)
+ 
   if (digitalRead(BUTTON3) == LOW) {
-    delay(200); // 消抖
+    delay(200); 
     if (bt3count == 0){
       Occupancy119();
       bt3count++;
