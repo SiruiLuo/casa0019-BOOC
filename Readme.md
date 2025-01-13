@@ -54,7 +54,7 @@ Inside the book, a gauge blended on a surface, resembling a paper page, shows th
 </p>
 
 This design had several advantages for the project. First, its box-like shape offered enough space inside to house all the components, including the servo and the power battery, which were the most significant components of the device. It also allowed the magnetic ball to be used on a flat surface, ensuring it moved smoothly and accurately. Lastly, the placement of the e-ink on the page made the whole page look coherent while allowing the user to access all the required data from the physical device. 
-For the digital augmentation of the device, there had to be a physical trigger, such as a QR code or a distinguished marker that Unity could recognize. This marker was designed in Adobe Illustrator and was laser-cut and painted to complete the BoOc's look (Pic.3). The concept used a feather-shaped bookmark as a trigger that was scanned through the app, and the 3D model of the device was placed on the designed marker in AR. The challenge of the marker design was building something the algorithm could recognize. Despite Trying different methods like creating a unique shape or coloring the marker in red, the algorithm did not recognize the marker. Therefore, using a QR code was the last option for triggering the AR on the app.
+For the digital augmentation of the device, there had to be a physical trigger, such as a QR code or a distinguished marker that Unity could recognize. This marker was designed in Adobe Illustrator and was laser-cut and painted to complete the BoOc's look (Pic.3). 
 
 <p align="center">
   <img src="Images/laser cutting.jpg" alt="Pic.3: Laser cutting The BoOc Marker design with the shape of a feather" width="300">
@@ -141,15 +141,14 @@ They are designed to listen to MQTT's real-time messages from the physical devic
 
 2.1 Pie Chart 
 
-The PieChart is designed using the XCharts library, positioned in the middle-right section. It provides a real-time comparison of library seat usage, showing the proportions of vacant and occupied seats. This data comes from an external API (Summar_data) that is updated every minute to ensure real-time accuracy, and is visualized using code from Summarize.cs. By parsing the obtained JSON responses, the chart dynamically reflects the number of sensors occupied and absent in a particular survey. Hence, it enhances data visualization and offers users a more intuitive understanding of the library's current status.  
+Positioned in the middle-right section, the pie chart provides a real-time comparison of library seat us-
+age, showing the proportions of vacant and occupied seats. This data is derived from the summarize data(see London n.d.(c)) and visualized using code from Summarize.cs. The pie chart enhances data visual- ization and offers users a more intuitive understanding of the library’s status.
 
- 
 
 2.2 Line Chart 
 
-Located in the middle-left section, the line chart presents trends in hourly average seat occupancy over a week, based on data from average_data. The raw dataset provides ten-minute averages of occupied and vacant seats over seven days. For better readability, only data between 9:00 and 17:00 is displayed, as these are the library's operational hours. This selective visualization offers users a longer-term perspective on library usage patterns, enabling informed decision-making and providing valuable insights for future predictions regarding the library's occupancy levels. 
+Located in the middle-left section, the line chart presents trends in hourly average seat occupancy over a week, based on data from average data (see London n.d.(b)). The raw dataset provides ten-minute averages of occupied and vacant seats over seven days. For better readability, only data between 9:00 and 17:00 is displayed, as these are the library’s operational hours. This selective visualization offers users a longer-term perspective on library usage patterns, enabling informed decision-making and providing valuable insights for future predictions regarding the library’s occupancy levels.
 
- 
 
 2.3 Maps 
 
@@ -163,26 +162,20 @@ According to the MQTT messages received from different buttons, such as buttonVa
 
 **3. MQTT Data Reception and API Parsing**
 
-The digital system's primary challenge is managing data from MQTT messages and API responses simultaneously. The data transmission workflow begins with the physical device, where users press one of three buttons (labelled 0, 1, and 2), each representing a specific library. This interaction sends data via MQTT to the digital dashboard. The MQTT messages, initially formatted as Python datasets, are decoded into a structure compatible with Unity. (implemented in the mqttManager.cs). 
+The primary challenge of the digital system is managing data from MQTT messages and API responses simultaneously. The data transmission workflow begins with the physical device, where users press one of three buttons (labelled 0, 1, and 2), each representing a specific library. This interaction sends data via MQTT to the digital dashboard. The MQTT messages, initially formatted as Python datasets, are decoded into a structure compatible with Unity (implemented in mqttManager.cs).
 
-To enable seamless switching between datasets for different libraries, the decoded button data is used to dynamically select and drive the appropriate API. This mechanism ensures the system retrieves and displays data corresponding to the selected library. By integrating MQTT and API data processing, the dashboard provides real-time and contextually accurate information, effectively bridging physical interactions with digital visualisations.  
+To enable seamless switching between datasets for different libraries, the decoded button data is used to dynamically select and drive the appropriate API. This mechanism ensures the system retrieves and displays data corresponding to the selected library. By integrating MQTT and API data processing, the dashboard provides real-time and contextually accurate information, effectively bridging physical interactions with digital visualizations.
+
 
 **4. AR interaction**
 
 4.1 Adding interaction & Image Target Trigger 
 
-Additionally, we have integrated our Booc dynamic model into the AR environment, enhancing a more immersive and comprehensive visualization. 
+We have integrated our Booc dynamic model into the AR environment to enhance immersive visual- ization. The AR Booc displays widgets identical to the physical version, such as the panel and the ball. Using Leantouch and TapToplace, users can place and move the Booc with a double-click, open it with a single click to display animations, rotate it with two fingers, and zoom in or out with three fingers.
 
-The individual widgets displayed in the AR Booc, such as the panel and the ball, are exactly the same as those shown in the physical one. We also used Leantouch and TapToplace, so users can place and move the Booc by simply clicking twice, and a single click can open the book and display animations. Meanwhile, users can rotate it by two fingers, and zoom in or out by three fingers.  
+By setting up the ReferenceImageLibrary and attaching our bookmark photo to it, combined with an animation of the UCL school gate (quad.fbx), scanning the bookmark with a phone triggers a stunning opening animation.
 
-By setting up the ReferenceImageLibrary and attaching our bookmark photo to it, as well as combine the newspaper with an animation of the UCL school gate (quad.fbx). After scanning the bookmark with the phone, we will see a gorgeous opening is triggered. 
 
 4.2 Animation 
 
-In order to enable users to open the book with a single click, we integrated the FBX animation (booc_all3) with the Dashboard's Prefab. 
-
-We first created an AnimatorController (BoocAnimatorController) in the Assets folder. By double-clicking it and dragging the booc_all3 animation into it, a new scene is generated and automatically connected to the Entry block to ensure that the animation can start smoothly. After that, the BoocAnimatorController should be mounted to the Animator component of the booc_all3 model. In this way, the animation can be played normally, and bring users a more vivid and interesting visual experience.  
-
-4.3 Interactive news modules 
-
-The device has a more significant potential as a vehicle for everyday information access, such as sharing some information advice. An image recognition function is used, whereby the campus newspaper appears when the back of the cover is scanned by the AR program, displaying the day's news. The news in the display was that in January 2025, UCL's Quad will be temporarily closed for renovation. To enhance the experience, an animation was created for the Quad model after it was downloaded from Sketchfab, achieving the effect of transitioning from a flat image to a three-dimensional model.
+To enable users to open the book with a single click, we integrated the FBX animation (booc all3) with the Dashboard’s Prefab. We created an AnimatorController (BoocAnimatorController) in the Assets folder, added the booc all3 animation to it, and connected it to the Entry block to ensure smooth animation start. The BoocAnimatorController is then mounted to the Animator component of the booc all3 model, providing users with a vivid and engaging visual experience. 
